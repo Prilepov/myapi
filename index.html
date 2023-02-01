@@ -35,9 +35,9 @@
                 url: 'https://appdb.trinfidigital.tech/api/var1/' + send_id,
                 type: "GET",
                 dataType: "json",
-                success: function (dataTwo) {
-                    console.log(dataTwo);
-                    dataTwo.forEach((post) => {
+                success: function (data) {
+                    console.log(data);
+                    data.forEach((post) => {
                         document.querySelector('.post_title').innerHTML += `
                        <option value="${post.id}">${post.value}</option>
                      `
@@ -52,12 +52,18 @@
             // let send_title = document.getElementById('id_title');
             document.querySelector('.post_post').innerHTML = 0;
             $.ajax({
-                url: 'https://appdb.trinfidigital.tech/api/var2/' + send_id,
+                url: 'https://appdb.trinfidigital.tech/api/var2',
                 type: "GET",
                 dataType: "json",
-                success: function (dataThree) {
-                    console.log(dataThree);
-                    dataThree.forEach((post) => {
+                success: function (data) {
+                    // console.log(data);
+                    let filtered = data.filter( function (e) {
+                        return e.prod_id = send_id;
+                    });
+                    console.log(filtered);
+                    // var dataParse = JSON.stringify(data);
+                    // console.log(dataParse);
+                    filtered.forEach((post) => {
                         document.querySelector('.post_post').innerHTML += `
                            <option value="${post.id}">${post.value}</option>
                          `
