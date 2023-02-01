@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="api.bitrix24.com/api/v1/"></script>
+    <script>
+        function f() {
+            let send_id = document.getElementById('id_id').value;
+            let send_title = document.getElementById('id_title').value;
+            let send_post = document.getElementById('id_post').value;
+
+            var formData = new FormData();
+
+            formData.append("fields[NAME]", send_id);
+
+            console.log(formData);
+
+            $.ajax({
+                url: "https://samcorp.bitrix24.ru/rest/1/pdc55j0gh5l79klf/crm.product.add.json",
+                type: "post",
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                data: formData,
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("Status: " + textStatus); alert("Error: " + errorThrown);
+                }
+            });
+        };
+    </script>
+
+
+
+    <script>
+        async function getAll() {
+            var myData;
+            $.ajax({
+                url: 'http://appdb.trinfidigital.tech/api/prod',
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    data.forEach((post) => {
+                        document.querySelector('.post_id').innerHTML += `
+                       <option value="${post.id}">${post.value}</option>
+                     `
+                    })
+                }
+            });
+
+
+
+        }
+        getAll();
+    </script>
+    <script>
+        $(document).on('change', '#id_id', function () {
+            let send_id = $(this).val();
+            // alert(send_id);
+            $.ajax({
+                url: 'http://appdb.trinfidigital.tech/api/var1/' + send_id,
+                type: "GET",
+                dataType: "json",
+                success: function (dataTwo) {
+                    console.log(dataTwo);
+                    // let send_id = document.getElementById('id_id').value;
+                    // console.log(send_id);
+                    dataTwo.forEach((post) => {
+                        document.querySelector('.post_title').innerHTML += `
+                       <option value="${post.id}">${post.value}</option>
+                     `
+                    })
+                }
+            });
+
+        });
+    </script>
+    <form action="">
+        <select class="post_id" id="id_id" name="selectid"></select>
+        <select class="post_title" id="id_title" name="selecttitle"></select>
+        <select class="post_post" id="id_post" name="selectpost"></select>
+    </form>
+    <button onclick="f()" value="ok">Отправить</button>
+</body>
+
+</html>
