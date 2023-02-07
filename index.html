@@ -5,92 +5,66 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+    <title>MyAPI</title>
 </head>
 
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://api.bitrix24.com/api/v1/"></script>
     <script>
-        $.ajax({
-            url: 'https://appdb.trinfidigital.tech/api/prod',
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
+        $.getJSON('https://appdb.trinfidigital.tech/api/prod', data => {
+            console.log(data);
+            data.forEach((post) => {
+                document.querySelector('.post_id').innerHTML += `
+                       <option value="${post.id}">${post.value}</option>
+                     `
+            })
+        });
+
+        $(document).on('change', '#id_id', function () {
+            let send_id = $(this).val();
+            document.querySelector('.post_title').innerHTML = 0;
+            $.getJSON('https://appdb.trinfidigital.tech/api/var1', data => {
                 console.log(data);
-                data.forEach((post) => {
-                    document.querySelector('.post_id').innerHTML += `
+                let filtred = data.filter(sli => sli.prod_id == send_id);
+                console.log(filtred);
+                filtred.forEach((post) => {
+                    document.querySelector('.post_title').innerHTML += `
                        <option value="${post.id}">${post.value}</option>
                      `
                 })
-            }
+            })
         });
-    </script>
-    <script>
+
         $(document).on('change', '#id_id', function () {
             let send_id = $(this).val();
-            // let send_title = document.getElementById('id_title');
-            document.querySelector('.post_title').innerHTML = 0;
-            $.ajax({
-                url: 'https://appdb.trinfidigital.tech/api/var1/' + send_id,
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    console.log(data);
-                    data.forEach((post) => {
-                        document.querySelector('.post_title').innerHTML += `
+            document.querySelector('.post_post').innerHTML = 0;
+            $.getJSON('https://appdb.trinfidigital.tech/api/var2', data => {
+                console.log(data);
+                let filtred = data.filter(sli => sli.prod_id == send_id);
+                console.log(filtred);
+                filtred.forEach((post) => {
+                    document.querySelector('.post_post').innerHTML += `
                        <option value="${post.id}">${post.value}</option>
                      `
-                    })
-                }
-            });
+                })
+            })
         });
     </script>
-    <script>
-        $(document).on('change', '#id_id', function () {
-            let send_id = $(this).val();
-            // let send_title = document.getElementById('id_title');
-            document.querySelector('.post_post').innerHTML = 0;
-            $.ajax({
-                url: 'https://appdb.trinfidigital.tech/api/var2/' + send_id,
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    // console.log(data);
-                    // let filtered = data.filter( function (e) {
-                    //     if ;
-                    // });
-                    // console.log(filtered);
-                    data.forEach((post) => {
-                        // filtered.forEach((post) => {
-                        document.querySelector('.post_post').innerHTML += `
-                           <option value="${post.id}">${post.value}</option>
-                         `
-                    })
-                }
-            });
 
-        });
-    </script>
     <script>
-        function f() {
+        f = () => {
             let send_id = document.getElementById('id_id').value;
             let send_title = document.getElementById('id_title').value;
             let send_post = document.getElementById('id_post').value;
-
-            var formData = new FormData();
-
-            formData.append("fields[NAME]", send_id);
-
-            console.log(formData);
 
             BX24.callMethod(
                 "crm.product.add",
                 {
                     fields:
                     {
-                        "NAME": id_title,
-                        "PRICE": 4900,
+                        "NAME": send_title,
+                        "PRICE": 777,
                         "QUANTITY": 17,
                         "OWNER_ID": "4",
                         "OWNER_TYPE": "D"
@@ -101,62 +75,41 @@
                         console.error(result.error());
                     else
                         console.info("Создан новый товар с ID " + result.data());
+
                     BX24.callMethod(
-                        "crm.deal.productrows.set",
-                        {
-                            id: 4,
-                            rows:
-                                [
-                                    {
-                                        "PRODUCT_ID": result.data(), "PRICE": 100.00, "QUANTITY": 7, "OWNER_ID": "4",
-                                        "OWNER_TYPE": "D"
-                                    }
-                                ]
-                        },
+                        "crm.deal.productrows.get",
+                        { id: 4 },
                         function (result) {
                             if (result.error())
                                 console.error(result.error());
                             else
-                                console.info(result.data());
+                                console.dir(result.data());
+
+                            BX24.callMethod(
+                                "crm.deal.productrows.set",
+                                {
+                                    id: 4,
+                                    rows:
+                                        [
+                                            {
+                                                "PRODUCT_ID": result.data(), "PRICE": 100.00, "QUANTITY": 7, "OWNER_ID": "4",
+                                                "OWNER_TYPE": "D"
+                                            }
+                                        ]
+                                },
+                                function (result) {
+                                    if (result.error())
+                                        console.error(result.error());
+                                    else
+                                        console.info(result.data());
+                                }
+                            );
+
                         }
+
                     );
 
-                }
-            );
 
-
-            // $.ajax({
-            //     url: "https://samcorp.bitrix24.ru/rest/1/mafimagiewzgpfjb/crm.product.add.json",
-            //     type: "post",
-            //     dataType: "json",
-            //     processData: false,
-            //     contentType: false,
-            //     data: formData,
-            //     success: function (data) {
-            //         console.log(data);
-            //     },
-            //     error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //         console.log("Status: " + textStatus); alert("Error: " + errorThrown);
-            //     }
-            // });
-
-            BX24.callMethod(
-                "crm.deal.productrows.set",
-                {
-                    id: 4,
-                    rows:
-                        [
-                            {
-                                "PRODUCT_ID": 10, "PRICE": 100.00, "QUANTITY": 7, "OWNER_ID": "4",
-                                "OWNER_TYPE": "D"
-                            }
-                        ]
-                },
-                function (result) {
-                    if (result.error())
-                        console.error(result.error());
-                    else
-                        console.info(result.data());
                 }
             );
         };
