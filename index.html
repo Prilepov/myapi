@@ -64,10 +64,7 @@
                     fields:
                     {
                         "NAME": send_title,
-                        "PRICE": 777,
-                        "QUANTITY": 17,
-                        "OWNER_ID": "4",
-                        "OWNER_TYPE": "D"
+                        "PRICE": 778
                     }
                 },
                 function (result) {
@@ -78,24 +75,25 @@
 
                     BX24.callMethod(
                         "crm.deal.productrows.get",
-                        { id: 4 },
+                        { id: 1 },
                         function (result) {
                             if (result.error())
                                 console.error(result.error());
                             else
-                                console.dir(result.data());
-
+                                // console.dir(result2.data());
+                                var firstArr = result.data();
+                            console.log(firstArr);
+                            var firstArr2 = firstArr.concat([
+                                {
+                                "ID": "114", "PRICE": "100.00", "QUANTITY": "7"
+                                }
+                            ]);
+                            console.log(firstArr2);
                             BX24.callMethod(
                                 "crm.deal.productrows.set",
                                 {
-                                    id: 4,
-                                    rows:
-                                        [
-                                            {
-                                                "PRODUCT_ID": result.data(), "PRICE": 100.00, "QUANTITY": 7, "OWNER_ID": "4",
-                                                "OWNER_TYPE": "D"
-                                            }
-                                        ]
+                                    id: 1,
+                                    rows: firstArr2
                                 },
                                 function (result) {
                                     if (result.error())
