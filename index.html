@@ -30,7 +30,7 @@
                 console.log(filtred);
                 filtred.forEach((post) => {
                     document.querySelector('.post_title').innerHTML += `
-                       <option value="${post.id}">${post.value}</option>
+                       <option value="${post.value}">${post.value}</option>
                      `
                 })
             })
@@ -45,7 +45,7 @@
                 console.log(filtred);
                 filtred.forEach((post) => {
                     document.querySelector('.post_post').innerHTML += `
-                       <option value="${post.id}">${post.value}</option>
+                       <option value="${post.value}">${post.value}</option>
                      `
                 })
             })
@@ -71,7 +71,12 @@
                     if (result.error())
                         console.error(result.error());
                     else
-                        console.info("Создан новый товар с ID " + result.data());
+                        var prodID = result.data();
+                    console.info("ID нового товара" + prodID);
+
+                    BX24.init(function () {
+                        console.log('Object с ID места встройки', BX24.placement.info());
+                    });
 
                     BX24.callMethod(
                         "crm.deal.productrows.get",
@@ -80,20 +85,20 @@
                             if (result.error())
                                 console.error(result.error());
                             else
-                                // console.dir(result2.data());
                                 var firstArr = result.data();
                             console.log(firstArr);
-                            var firstArr2 = firstArr.concat([
+                            var secondArr = firstArr.concat([
                                 {
-                                "ID": "114", "PRICE": "100.00", "QUANTITY": "7"
+                                    "PRODUCT_ID": prodID, "QUANTITY": "1", "PRODUCT_NAME": send_title
                                 }
                             ]);
-                            console.log(firstArr2);
+                            console.log(secondArr);
+
                             BX24.callMethod(
                                 "crm.deal.productrows.set",
                                 {
                                     id: 1,
-                                    rows: firstArr2
+                                    rows: secondArr
                                 },
                                 function (result) {
                                     if (result.error())
@@ -102,23 +107,20 @@
                                         console.info(result.data());
                                 }
                             );
-
                         }
-
                     );
-
-
                 }
             );
         };
     </script>
+
     <form action="">
         <select class="post_id" id="id_id" name="selectid"></select>
         <select class="post_title" id="id_title" name="selecttitle"></select>
         <select class="post_post" id="id_post" name="selectpost"></select>
     </form>
+
     <button onclick="f()" value="ok">Отправить</button>
-    <div id="test_div"></div>
 </body>
 
 </html>
